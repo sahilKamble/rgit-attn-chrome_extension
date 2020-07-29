@@ -12,7 +12,6 @@ function getPeople() {
 }
 
 function scrollList(element) {
-    console.log('kek')
     element.scrollTop = element.scrollHeight;
     var num = element.scrollTop;
     function scroll(n) {
@@ -29,6 +28,8 @@ function scrollList(element) {
         var sl = setTimeout(function () {
             scroll(num);
         }, 200);
+    } else {
+        getPeople();
     }
 }
 
@@ -50,7 +51,7 @@ function collectinfo(callback) {
                 clearInterval(checkExist);
                 callback();
             }
-        }, 100);
+        }, 1000);
         // added wait cz the above interval thing doesnt work
         // await new Promise((r) => setTimeout(r, 2000));
     }
@@ -60,7 +61,7 @@ function collectinfo(callback) {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'getAttendance') {
         collectinfo(function () {
-            // get the element to autoscroll
+            // get the element to perform autoscroll in
             var list = document.querySelector('[role="tabpanel"]');
             //scroll list of people
             scrollList(list);
