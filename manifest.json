@@ -1,0 +1,22 @@
+{
+  "name": "Google Meet Attendance",
+  "description": "Extentsion that takes attendance for RGIT professors.",
+  "version": "1.0",
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ],
+      "persistent": false
+    }
+  ],
+  "permissions": ["tabs", "https://*/"],
+  "browser_action": {
+    "default_title": "Save Attendance",
+    "default_popup": "popup.html"
+  }
+}
