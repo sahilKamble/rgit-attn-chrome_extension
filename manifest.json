@@ -14,7 +14,10 @@
       "persistent": false
     }
   ],
-  "permissions": ["tabs", "https://*/"],
+  "permissions": [
+    "tabs",
+    "https://*/"
+  ],
   "browser_action": {
     "default_title": "Save Attendance",
     "default_popup": "popup.html"

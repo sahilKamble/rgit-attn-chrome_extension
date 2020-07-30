@@ -39,22 +39,22 @@ function collectinfo(callback) {
         return el.offsetParent === null;
     }
 
-    // check if chat is already open
+    // check if people's list is already open
     if (document.querySelector('[aria-label*="participants."]') == null) {
-        var chat = document.querySelector('[data-tooltip="Show everyone"]');
-        // open chat if its not open.
-        chat.click();
-        // keep checking if the chat is visible yet(i dont think this works)
-        var checkExist = setInterval(function () {
-            if (!isHidden(document.querySelector('[role="tabpanel"]'))) {
-                console.log("Visible!");
-                clearInterval(checkExist);
-                callback();
-            }
-        }, 1000);
-        // added wait cz the above interval thing doesnt work
-        // await new Promise((r) => setTimeout(r, 2000));
+        var plist = document.querySelector('[data-tooltip="Show everyone"]');
+        // open list if its not open.
+        plist.click();
     }
+    // keep checking if the list is visible yet(i dont think this works)
+    var checkExist = setInterval(function () {
+        if (!isHidden(document.querySelector('[role="tabpanel"]'))) {
+            console.log("Visible!");
+            clearInterval(checkExist);
+            callback();
+        }
+    }, 1000);
+    // added wait cz the above interval thing doesnt work
+    // await new Promise((r) => setTimeout(r, 2000));
 }
 
 //add a listener to start attendance reading code when we get a message
