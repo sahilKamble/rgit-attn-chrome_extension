@@ -1,4 +1,5 @@
 let list = [];
+var done = false;
 
 function getPeople() {
     for (let name of document.querySelectorAll("[data-sort-key]")) {
@@ -14,6 +15,7 @@ function getPeople() {
 function scrollList(element) {
     element.scrollTop = element.scrollHeight;
     var num = element.scrollTop;
+
     function scroll(n) {
         element.scrollTop = n;
         num = n - 100;
@@ -21,15 +23,18 @@ function scrollList(element) {
             var sl = setTimeout(function () {
                 getPeople();
                 scroll(num);
-            }, 200);
+            }, 200);    
         }
+        else done = true;
     }
+
     if (element.scrollTop > 0) {
         var sl = setTimeout(function () {
             scroll(num);
         }, 200);
     } else {
         getPeople();
+        done = true;
     }
 }
 
@@ -58,14 +63,23 @@ function collectinfo(callback) {
 }
 
 //add a listener to start attendance reading code when we get a message
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+
     if (request.action === 'getAttendance') {
+        
         collectinfo(function () {
             // get the element to perform autoscroll in
             var list = document.querySelector('[role="tabpanel"]');
             //scroll list of people
             scrollList(list);
         });
-        sendResponse({ list });
+        var Id = setInterval(() => {
+            if(done) {
+                clearInterval(Id);
+                sendResponse({list}); 
+            }
+        }, 1000);
+        return true;
     }
+    
 });
