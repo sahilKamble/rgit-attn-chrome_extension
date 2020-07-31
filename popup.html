@@ -6,34 +6,32 @@
   <body>
     <div id="mainPopup" class="hidden">
       <h1>Google Meet Attendance</h1>
-      <br />
-      <a class="save-attendance">Save Attendance</a><br>
-      <label for="items">Divison:</label>
       
-      <!-- The value for `for=""` and `id=""` has to be same. -->
-      <div class="save-attendance">
-      <select id="items save-attendance ">
-        <option value="item-1">A</option>
-        <option value="item-2">B</option>
-        <option value="item-3">Elective</option>
-     </select>
-     </div><br>
-     
-     <label for="items ">Subject:</label>
-    <div class="save-attendance">
-     <select id="items">
-       <option value="item-1">Computer Network</option>
-       <option value="item-2">Database Management System</option>
-       <option value="item-3">Microprocessor</option>
-       <option value="item-5">Theory of Computer Science</option>
-       <option value="item-4">Business Communications And Ethics</option>
-       <option VALUE="item-6">Web-Design</option>
-       <option value="item-7">Advance Algorithm</option>
-       <option value="item-8">Multimedia</option>
-     </select>
-     </div>
-     
-
+      <div class="dropdown">
+        <div class="division-dropdown">
+          <label for="division" class="select-label">Divison:</label>
+          <select id="division">
+            <option value="item-1" class="item">A</option>
+            <option value="item-2" class="item">B</option>
+            <option value="item-3" class="item">Elective</option>
+          </select>
+        </div>
+  
+        <div class="subjects-dropdown">
+          <label for="subject" class="select-label">Subject:</label>
+          <select id="subject">
+            <option value="item-1" class="item">Computer Network</option>
+            <option value="item-2" class="item">Database Management System</option>
+            <option value="item-3" class="item">Microprocessor</option>
+            <option value="item-5" class="item">Theory of Computer Science</option>
+            <option value="item-4" class="item">Business Communications And Ethics</option>
+            <option value="item-6" class="item">Web-Design</option>
+            <option value="item-7" class="item">Advance Algorithm</option>
+            <option value="item-8" class="item">Multimedia</option>
+          </select>
+        </div>
+      </div>
+      <a class="save-attendance">Save Attendance</a><br />
     </div>
     <div id="notOnMeet">
       <h4>This Extension only works on meet.google.com</h4>
