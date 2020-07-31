@@ -1,4 +1,4 @@
-let list = [];
+var list = [];
 var done = false;
 
 function getPeople() {
