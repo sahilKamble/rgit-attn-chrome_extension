@@ -9,7 +9,7 @@ const url  = "https://attn-server.herokuapp.com/";
 var url_subj = url+"subjects?name="+subject;
 var attendance = [];                // stores array of json objects of student attendance
 var X = require('xmlhttprequest').XMLHttpRequest;
-var k = 0;
+
 
 // request to https://attn-server.herokuapp.com/subjects to get info of list of students,teacher name,etc
 let request1 = new X();
@@ -61,7 +61,7 @@ request1.onload = () => {
               // console.log(jsonObj2[k].name+'  is   ABSENT');
                var data ={
                  "present":false,
-                 "student":jsonObj2[k]._id,
+                 "student":jsonObj2[j]._id,
                  "subject":subjectId
 
                }
