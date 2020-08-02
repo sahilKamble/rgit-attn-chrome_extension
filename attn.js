@@ -1,8 +1,8 @@
-//var subject ="MP";
-//var attendees = ['sebin francis','paras','kapse'];
+var subject ="MP";
+var attendees = ['sebin kannampuzha','paras kamble','kapse'];
 
-var subject = "";               // get subject name from contentScript
-var attendees = [];             // get list of attendees from contentScript
+//var subject = "";               // get subject name from contentScript
+//var attendees = [];             // get list of attendees from contentScript
 var div = "";                   // get division name from contentScript
 var subjectId ="" ;
 const url  = "https://attn-server.herokuapp.com/";
@@ -43,7 +43,7 @@ request1.onload = () => {
             k = j;  
             var count = attendees.length;
             for( i = 0; i < attendees.length ; i++){
-              if(jsonObj2[j].name ==attendees[i] ){
+              if(jsonObj2[j].name == attendees[i] ){
                  // console.log(jsonObj2[j].name+'  is  PRESENT');
                   var data = {
                     "present": true,
@@ -51,23 +51,25 @@ request1.onload = () => {
                     "subject":subjectId
                   }
                   attendance.push(data);
+                  count--;
               }
                
             count--;
             
             };
+            if(count == 0){
+              // console.log(jsonObj2[k].name+'  is   ABSENT');
+               var data ={
+                 "present":false,
+                 "student":jsonObj2[k]._id,
+                 "subject":subjectId
+
+               }
+               attendance.push(data);  
 
 
             }
-             if(count === 0){
-               // console.log(jsonObj2[k].name+'  is   ABSENT');
-                var data ={
-                  "present":false,
-                  "student":jsonObj2[k]._id,
-                  "subject":subjectId
-
-                }
-                attendance.push(data);   
+ 
           };
 
           //console.log(attendance);
