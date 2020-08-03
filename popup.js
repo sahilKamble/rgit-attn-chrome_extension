@@ -1,12 +1,12 @@
 function save(list) {
 
-    // var sub = document.querySelector('#subject')
-    // var subject = sub.options[sub.selectedIndex].text
+    var sub = document.querySelector('#subject')
+    var subject = sub.options[sub.selectedIndex].text
 
-    // var div = document.querySelector('#subject');
-    // var division = div.options[div.selectedIndex].text
+    var div = document.querySelector('#subject');
+    var division = div.options[div.selectedIndex].text
 
-    var subject = "Theory of Computer Science";
+    // var subject = "Theory of Computer Science";
     var attendees = list;
     var subjectId = "";
     const url = "https://attn-server.herokuapp.com/";
@@ -55,9 +55,7 @@ function save(list) {
                                 attendance.push(data);
                                 count--;
                             }
-
                             count--;
-
                         };
                         if (count == 0) {
                             // console.log(jsonObj2[k].name+'  is   ABSENT');
@@ -65,11 +63,9 @@ function save(list) {
                                 "present": false,
                                 "student": jsonObj2[j]._id,
                                 "subject": subjectId
-
                             }
                             attendance.push(data);
                         }
-
                     };
 
                     //console.log(attendance);
@@ -84,6 +80,7 @@ function save(list) {
                     console.log('error ${request2.status} ${request2.statusText}')
                 }
             }
+            
         } else {
             console.log('error ${request1.status} ${request1.statusText}')
         }
@@ -94,6 +91,28 @@ chrome.tabs.getSelected(null, tab => {
     if (tab.url.includes('meet.google.com')) {
         document.querySelector('#notOnMeet').classList.add('hidden');
         document.querySelector('#mainPopup').classList.remove('hidden');
+
+        let request1 = new XMLHttpRequest();
+        request1.open("GET", "https://attn-server.herokuapp.com/subjects");
+        request1.send();
+        request1.onload = () => {
+
+            if (request1.status === 200) {
+                var jsonObj = JSON.parse(request1.responseText);
+                // console.log(jsonObj1);
+                var i = 2;
+                for (subject of jsonObj) {
+                    var option = document.createElement("option");
+                    option.classList.add("item")
+                    option.setAttribute("value", "item-" + i++)
+                    var node = document.createTextNode(subject.name);
+                    option.appendChild(node);
+                    var element = document.getElementById("subject");
+                    element.appendChild(option);
+                }
+
+            }
+        }
     }
 });
 
