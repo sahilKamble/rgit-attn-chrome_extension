@@ -80,41 +80,39 @@ function save(list) {
                     console.log('error ${request2.status} ${request2.statusText}')
                 }
             }
-            
+
         } else {
             console.log('error ${request1.status} ${request1.statusText}')
         }
     }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'getSubjects' }, response => {
+            console.log(response);
+            var subjects = response.subjects;
+            var i = 2;
+            for (subject of subjects) {
+                var option = document.createElement("option");
+                option.classList.add("item")
+                option.setAttribute("value", "item-" + i++)
+                var node = document.createTextNode(subject);
+                option.appendChild(node);
+                var element = document.getElementById("subject");
+                element.appendChild(option);
+            }
+        });
+    });
+});
+
 chrome.tabs.getSelected(null, tab => {
     if (tab.url.includes('meet.google.com')) {
         document.querySelector('#notOnMeet').classList.add('hidden');
         document.querySelector('#mainPopup').classList.remove('hidden');
-
-        let request1 = new XMLHttpRequest();
-        request1.open("GET", "https://attn-server.herokuapp.com/subjects");
-        request1.send();
-        request1.onload = () => {
-
-            if (request1.status === 200) {
-                var jsonObj = JSON.parse(request1.responseText);
-                // console.log(jsonObj1);
-                var i = 2;
-                for (subject of jsonObj) {
-                    var option = document.createElement("option");
-                    option.classList.add("item")
-                    option.setAttribute("value", "item-" + i++)
-                    var node = document.createTextNode(subject.name);
-                    option.appendChild(node);
-                    var element = document.getElementById("subject");
-                    element.appendChild(option);
-                }
-
-            }
-        }
     }
 });
+
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     //trigger Attendance reading code on click on button

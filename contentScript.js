@@ -1,5 +1,25 @@
 var list = [];
+var subjects = [];
 var done = false;
+var subOver = false;
+
+subjects = [];
+let request1 = new XMLHttpRequest();
+request1.open("GET", "https://attn-server.herokuapp.com/subjects");
+request1.send();
+request1.onload = () => {
+
+    if (request1.status === 200) {
+        var jsonObj = JSON.parse(request1.responseText);
+        // console.log(jsonObj1);
+        var i = 2;
+        for (subject of jsonObj) {
+            subjects.push(subject.name)
+        }
+        console.log(subjects);
+    }
+}
+subOver = true;
 
 function getPeople() {
     for (let name of document.querySelectorAll("[data-sort-key]")) {
@@ -23,7 +43,7 @@ function scrollList(element) {
             var sl = setTimeout(function () {
                 getPeople();
                 scroll(num);
-            }, 200);    
+            }, 200);
         }
         else done = true;
     }
@@ -63,10 +83,9 @@ function collectinfo(callback) {
 }
 
 //add a listener to start attendance reading code when we get a message
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     if (request.action === 'getAttendance') {
-        
         collectinfo(function () {
             // get the element to perform autoscroll in
             var list = document.querySelector('[role="tabpanel"]');
@@ -74,12 +93,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             scrollList(list);
         });
         var Id = setInterval(() => {
-            if(done) {
+            if (done) {
                 clearInterval(Id);
-                sendResponse({list}); 
+                sendResponse({ list });
             }
         }, 1000);
         return true;
     }
-    
+    if (request.action === 'getSubjects') {
+        sendResponse({ subjects });
+        return true;
+    }
 });

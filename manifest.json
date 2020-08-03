@@ -11,7 +11,8 @@
       "js": [
         "contentScript.js"
       ],
-      "persistent": false
+      "persistent": false,
+      "run_at": "document_start"
     }
   ],
   "permissions": [
