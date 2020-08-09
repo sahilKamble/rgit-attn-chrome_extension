@@ -12,6 +12,7 @@ function save(list) {
     const url = "https://attn-server.herokuapp.com/";
     var url_subj = url + "subjects?name=" + subject;
     var attendance = [];                // stores array of json objects of student attendance
+    var present = 0;
 
     // request to https://attn-server.herokuapp.com/subjects to get info of list of students,teacher name,etc
     let request1 = new XMLHttpRequest();
@@ -21,9 +22,9 @@ function save(list) {
 
         if (request1.status === 200) {
             var jsonObj1 = JSON.parse(request1.responseText);
-            console.log(jsonObj1);
+            // console.log(jsonObj1);
             subjectId = jsonObj1[0]._id;
-            console.log(subjectId);
+            // console.log(subjectId);
             var url_subjectStudents = url + "subjects/" + subjectId + "/students";
             // console.log(url_subjectStudents);
 
@@ -36,8 +37,8 @@ function save(list) {
                 if (request2.status === 200) {
                     var jsonObj2 = JSON.parse(request2.responseText);
                     // console.log(jsonObj2);
-
-                    var countKey = Object.keys(jsonObj2).length;
+                    jsonObj2 = jsonObj2.students;
+                    var countKey = jsonObj2.length;
                     // console.log(countKey);
 
                     // logic to check attendance and append json object of students attendace to attendance list
@@ -53,6 +54,7 @@ function save(list) {
                                     "subject": subjectId
                                 }
                                 attendance.push(data);
+                                present++;
                                 count--;
                             }
                             count--;
@@ -68,13 +70,21 @@ function save(list) {
                         }
                     };
 
-                    //console.log(attendance);
+                    presentText = document.querySelector('.present');
+                    presentText.innerText = present + ' Students are present.';
+
+                    console.log(attendance);
 
                     // request to send attendance to https://attn-server.herokuapp.com/attn
-                    var request3 = new XMLHttpRequest();
-                    request3.open("POST", "https://attn-server.herokuapp.com/attn", true);
-                    request3.setRequestHeader('Content-Type', 'application/json');
-                    request3.send(JSON.stringify(attendance));
+                    // var request3 = new XMLHttpRequest();
+                    // request3.open("POST", "https://attn-server.herokuapp.com/attn", true);
+                    // request3.setRequestHeader('Content-Type', 'application/json');
+                    // request3.send(JSON.stringify(attendance));
+
+                    saved = document.querySelector('.saved');
+                    saved.classList.remove('hidden');
+                    saveButton = document.querySelector('.save-attendance');
+                    saveButton.classList.add('hidden');
 
                 } else {
                     console.log('error ${request2.status} ${request2.statusText}')
@@ -117,9 +127,13 @@ chrome.tabs.getSelected(null, tab => {
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     //trigger Attendance reading code on click on button
     document.querySelector('.save-attendance').addEventListener('click', function () {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
-            console.log(response.list);
-            save(response.list)
-        });
+        let sub = document.querySelector('#subject');
+        if (sub.selectedIndex != 0) {
+            chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
+                console.log(response.list);
+                save(response.list)
+
+            });
+        }
     });
 });

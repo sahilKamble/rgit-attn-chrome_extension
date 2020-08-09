@@ -61,3 +61,7 @@ h1 {
 .select-label {
   margin-right: 1rem;
 }
+
+.attn-link {
+  text-decoration: none;
+}
