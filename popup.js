@@ -76,10 +76,10 @@ function save(list) {
                     console.log(attendance);
 
                     // request to send attendance to https://attn-server.herokuapp.com/attn
-                    // var request3 = new XMLHttpRequest();
-                    // request3.open("POST", "https://attn-server.herokuapp.com/attn", true);
-                    // request3.setRequestHeader('Content-Type', 'application/json');
-                    // request3.send(JSON.stringify(attendance));
+                    var request3 = new XMLHttpRequest();
+                    request3.open("POST", "https://attn-server.herokuapp.com/attn", true);
+                    request3.setRequestHeader('Content-Type', 'application/json');
+                    request3.send(JSON.stringify(attendance));
 
                     saved = document.querySelector('.saved');
                     saved.classList.remove('hidden');
