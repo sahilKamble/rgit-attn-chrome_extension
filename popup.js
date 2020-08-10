@@ -8,6 +8,7 @@ function save(list) {
 
     // var subject = "Theory of Computer Science";
     var attendees = list;
+    var attendees = attendees.map(name => name.toLowerCase())
     var subjectId = "";
     const url = "https://attn-server.herokuapp.com/";
     var url_subj = url + "subjects?name=" + subject;
@@ -42,33 +43,26 @@ function save(list) {
                     // console.log(countKey);
 
                     // logic to check attendance and append json object of students attendace to attendance list
-                    for (j = 0; j < countKey; j++) {
-                        k = j;
-                        var count = attendees.length;
-                        for (i = 0; i < attendees.length; i++) {
-                            if (jsonObj2[j].name == attendees[i]) {
-                                // console.log(jsonObj2[j].name+'  is  PRESENT');
-                                var data = {
-                                    "present": true,
-                                    "student": jsonObj2[j]._id,
-                                    "subject": subjectId
-                                }
-                                attendance.push(data);
-                                present++;
-                                count--;
-                            }
-                            count--;
-                        };
-                        if (count == 0) {
-                            // console.log(jsonObj2[k].name+'  is   ABSENT');
-                            var data = {
-                                "present": false,
-                                "student": jsonObj2[j]._id,
+                    for (student of jsonObj2) {
+                        if (attendees.indexOf(student.name.toLowerCase()) >= 0) {
+                            let data = {
+                                "present": true,
+                                "student": student._id,
                                 "subject": subjectId
                             }
                             attendance.push(data);
+                            present++;
+                        } else {
+                            let data = {
+                                "present": false,
+                                "student": student._id,
+                                "subject": subjectId
+                            }
+                            console.log(student.name);
+                            // console.log(attendees.indexOf(student.name.toLowerCase()));
+                            attendance.push(data);
                         }
-                    };
+                    }
 
                     presentText = document.querySelector('.present');
                     presentText.innerText = present + ' Students are present.';
@@ -80,6 +74,7 @@ function save(list) {
                     request3.open("POST", "https://attn-server.herokuapp.com/attn", true);
                     request3.setRequestHeader('Content-Type', 'application/json');
                     request3.send(JSON.stringify(attendance));
+                    console.log('attendance sent')
 
                     saved = document.querySelector('.saved');
                     saved.classList.remove('hidden');

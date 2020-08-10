@@ -84,8 +84,8 @@ function collectinfo(callback) {
 
 //add a listener to start attendance reading code when we get a message
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-
     if (request.action === 'getAttendance') {
+        done = false;
         collectinfo(function () {
             // get the element to perform autoscroll in
             var list = document.querySelector('[role="tabpanel"]');
