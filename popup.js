@@ -8,7 +8,9 @@ function save(list) {
 
     // var subject = "Theory of Computer Science";
     var attendees = list;
-    var attendees = attendees.map(name => name.toLowerCase())
+    var attendees = attendees.map(name => name.toLowerCase());
+    var dbStudents = [];
+    var fuzzyAttendees = []; //array to store names correspoding to their names in database
     var subjectId = "";
     const url = "https://attn-server.herokuapp.com/";
     var url_subj = url + "subjects?name=" + subject;
@@ -23,11 +25,8 @@ function save(list) {
 
         if (request1.status === 200) {
             var jsonObj1 = JSON.parse(request1.responseText);
-            // console.log(jsonObj1);
             subjectId = jsonObj1[0]._id;
-            // console.log(subjectId);
             var url_subjectStudents = url + "subjects/" + subjectId + "/students";
-            // console.log(url_subjectStudents);
 
             // request to https://attn-server.herokuapp.com/subjects/<subjectID>/students  to get info of list of students,name ,etc
             let request2 = new XMLHttpRequest();
@@ -37,14 +36,25 @@ function save(list) {
 
                 if (request2.status === 200) {
                     var jsonObj2 = JSON.parse(request2.responseText);
-                    // console.log(jsonObj2);
                     jsonObj2 = jsonObj2.students;
-                    var countKey = jsonObj2.length;
-                    // console.log(countKey);
+
+                    //add db names to fuzzyset
+                    for (student of jsonObj2) {
+                        // console.log(student.name);
+                        dbStudents.push(student.name);
+                    }
+                    let fs = FuzzySet(dbStudents, false);
+
+                    for (student of attendees) {
+                        dude = fs.get(student, null, 0,5);
+                        if (dude != null) {
+                            fuzzyAttendees.push(dude[0][1]);
+                        }
+                    }
 
                     // logic to check attendance and append json object of students attendace to attendance list
                     for (student of jsonObj2) {
-                        if (attendees.indexOf(student.name.toLowerCase()) >= 0) {
+                        if (fuzzyAttendees.indexOf(student.name.toLowerCase()) >= 0) {
                             let data = {
                                 "present": true,
                                 "student": student._id,
@@ -59,7 +69,6 @@ function save(list) {
                                 "subject": subjectId
                             }
                             console.log(student.name);
-                            // console.log(attendees.indexOf(student.name.toLowerCase()));
                             attendance.push(data);
                         }
                     }
@@ -78,6 +87,7 @@ function save(list) {
 
                     saved = document.querySelector('.saved');
                     saved.classList.remove('hidden');
+
                     saveButton = document.querySelector('.save-attendance');
                     saveButton.classList.add('hidden');
 
@@ -85,7 +95,6 @@ function save(list) {
                     console.log('error ${request2.status} ${request2.statusText}')
                 }
             }
-
         } else {
             console.log('error ${request1.status} ${request1.statusText}')
         }
@@ -94,25 +103,27 @@ function save(list) {
 
 document.addEventListener("DOMContentLoaded", () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'getSubjects' }, response => {
-            console.log(response);
-            var subjects = response.subjects;
-            var i = 2;
-            for (subject of subjects) {
-                var option = document.createElement("option");
-                option.classList.add("item")
-                option.setAttribute("value", "item-" + i++)
-                var node = document.createTextNode(subject);
-                option.appendChild(node);
-                var element = document.getElementById("subject");
-                element.appendChild(option);
-            }
-        });
+        if (tabs[0].url.includes('meet.google.com') && tabs[0].url.includes('-')) {
+            chrome.tabs.sendMessage(tabs[0].id, { action: 'getSubjects' }, response => {
+                console.log(response);
+                var subjects = response.subjects;
+                var i = 2;
+                for (subject of subjects) {
+                    var option = document.createElement("option");
+                    option.classList.add("item")
+                    option.setAttribute("value", "item-" + i++)
+                    var node = document.createTextNode(subject);
+                    option.appendChild(node);
+                    var element = document.getElementById("subject");
+                    element.appendChild(option);
+                }
+            });
+        }
     });
 });
 
 chrome.tabs.getSelected(null, tab => {
-    if (tab.url.includes('meet.google.com')) {
+    if (tab.url.includes('meet.google.com') && tab.url.includes('-')) {
         document.querySelector('#notOnMeet').classList.add('hidden');
         document.querySelector('#mainPopup').classList.remove('hidden');
     }
@@ -127,7 +138,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
                 console.log(response.list);
                 save(response.list)
-
             });
         }
     });
