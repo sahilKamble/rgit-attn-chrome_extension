@@ -46,7 +46,7 @@ function save(list) {
                     let fs = FuzzySet(dbStudents, false);
 
                     for (student of attendees) {
-                        dude = fs.get(student, null, 0,5);
+                        dude = fs.get(student, null, 0, 5);
                         if (dude != null) {
                             fuzzyAttendees.push(dude[0][1]);
                         }
@@ -88,7 +88,7 @@ function save(list) {
                     saved = document.querySelector('.saved');
                     saved.classList.remove('hidden');
 
-                    saveButton = document.querySelector('.save-attendance');
+                    saveButton = document.querySelector('.btn');
                     saveButton.classList.add('hidden');
 
                 } else {
@@ -140,5 +140,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 save(response.list)
             });
         }
+    });
+
+    document.querySelector('.populate').addEventListener('click', function () {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
+            console.log(response.list);
+        });
     });
 });
