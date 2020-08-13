@@ -124,8 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 chrome.tabs.getSelected(null, tab => {
     if (tab.url.includes('meet.google.com') && tab.url.includes('-')) {
-        document.querySelector('#notOnMeet').classList.add('hidden');
-        document.querySelector('#mainPopup').classList.remove('hidden');
+        // document.querySelector('#notOnMeet').classList.add('hidden');
+        // document.querySelector('#mainPopup').classList.remove('hidden');
     }
 });
 

@@ -1,39 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
-    <div id="mainPopup" class="hidden">
-      <h1>Google Meet Attendance</h1>
-      
-      <div class="dropdown">
-        <div class="division-dropdown">
-          <label for="division" class="select-label">Divison:</label>
-          <select id="division">
-            <option value="item-1" class="item">A</option>
-            <option value="item-2" class="item">B</option>
-            <option value="item-3" class="item">Elective</option>
-          </select>
-        </div>
-  
-        <div class="subjects-dropdown">
-          <label for="subject" class="select-label">Subject:</label>
-          <select id="subject">
-            <option value="item-1" class="item">Select Subject</option>
-          </select>
-        </div>
-      </div>
-      <button class="populate btn">Populate List</button>
-      <button class="save-attendance btn">Save Attendance</button>
-      <h4 class="saved hidden">Attendance Saved!</h4>
-      <p class="present"></p>
-      <a class="attn-link" href="https://attn-server.herokuapp.com/" target="_blank">Check Attendance</a>
+</head>
+
+<body>
+    <div id="loginPopup">
+        <div class="login-header">Login</div>
+        <form class="login">
+            <div class="form-group">
+                <input type="text" id="user" name="user" placeholder="Username" class="form-input required" />
+                <label for="user" class="form-label">Username</label>
+            </div>
+            <div class="form-group">
+                <input type="password" id="pass" name="pass" placeholder="Password" class="form-input required" />
+                <label for="pass" class="form-label">Password</label>
+            </div>
+            <div class="error hidden">
+                <h5 class="error-para">Wrong Password or Username! Please try again.</h5>
+            </div>
+            <div class="form-submit-div">
+                <input type="submit" value="LOGIN" class="form-submit btn" disabled/>
+            </div>
+        </form>
     </div>
-    <div id="notOnMeet">
-      <h4>This Extension only works in Google Meets</h4>
+
+    <div id="attendancePopup" class="hidden">
+        <h1>Google Meet Attendance</h1>
+
+        <div class="dropdown">
+            <div class="division-dropdown">
+                <label for="division" class="select-label">Divison:</label>
+                <select id="division">
+                    <option value="item-1" class="item">A</option>
+                    <option value="item-2" class="item">B</option>
+                    <option value="item-3" class="item">Elective</option>
+                </select>
+            </div>
+
+            <div class="subjects-dropdown">
+                <label for="subject" class="select-label">Subject:</label>
+                <select id="subject">
+                    <option value="item-1" class="item">Select Subject</option>
+                </select>
+            </div>
+        </div>
+        <button class="populate btn">Populate List</button>
+        <button class="save-attendance btn">Save Attendance</button>
+        <h4 class="saved hidden">Attendance Saved!</h4>
+        <p class="present"></p>
+        <a class="attn-link" href="https://attn-server.herokuapp.com/" target="_blank">Check Attendance</a>
     </div>
+    <div id="notOnMeet" class="hidden">
+        <h4>This Extension only works in Google Meets</h4>
+    </div>
+    <script src="login.js"></script>
     <script type="text/javascript" src="fuzzyset.js"></script>
     <script src="popup.js"></script>
-  </body>
+</body>
+
 </html>
