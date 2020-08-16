@@ -2,24 +2,48 @@ var list = [];
 var subjects = [];
 var done = false;
 var subOver = false;
+var userOver = false;
+var user;
 
-subjects = [];
-let request1 = new XMLHttpRequest();
-request1.open("GET", "https://attn-server.herokuapp.com/subjects");
-request1.send();
-request1.onload = () => {
+// subjects = [];
+//let request1 = new XMLHttpRequest();
+// request1.open("GET", "https://attn-server.herokuapp.com/");
+// request1.send();
+// request1.onload = () => {
 
-    if (request1.status === 200) {
-        var jsonObj = JSON.parse(request1.responseText);
-        // console.log(jsonObj1);
-        var i = 2;
-        for (subject of jsonObj) {
-            subjects.push(subject.name)
-        }
-        console.log(subjects);
-    }
-}
-subOver = true;
+//     if (request1.status === 200) {
+//         var jsonObj = JSON.parse(request1.responseText);
+//         // console.log(jsonObj1);
+//         var i = 2;
+//         for (subject of jsonObj) {
+//             subjects.push(subject.name)
+//         }
+//         console.log(subjects);
+//     }
+// }
+// subOver = true;
+// fetch('https://attn-server.herokuapp.com/users/me')
+//   .then(response => response.json())
+//   .then(data => {
+//       user = data;
+//       return;
+//     });
+
+// request1.open("GET", "https://attn-server.herokuapp.com/users/me");
+// request1.send();
+// request1.onload = () => {
+//     console.log(rerequest1)
+//     var jsonObj = JSON.parse(request1.responseText);
+//     // console.log(jsonObj1);
+//     // for (subject of jsonObj) {
+//     //     subjects.push(subject.name)
+//     // }
+//     user = jsonObj;
+//     console.log(jsonObj);
+// }
+
+
+
 
 function getPeople() {
     for (let name of document.querySelectorAll("[data-sort-key]")) {
@@ -102,6 +126,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     if (request.action === 'getSubjects') {
         sendResponse({ subjects });
+        return true;
+    }
+    if (request.action === 'getUser') {
+        sendResponse(user);
         return true;
     }
 });

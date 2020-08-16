@@ -25,7 +25,7 @@ document.addEventListener('submit', async function (event) {
     }
 
     let httpHeaders = { 'Content-Type': 'application/json' };
-    let url = 'https://localhost:443/users/login';
+    let url = 'https://attn-server.herokuapp.com/users/login';
     let myHeaders = new Headers(httpHeaders);
     let data = {
         username: form.user,
@@ -47,9 +47,10 @@ document.addEventListener('submit', async function (event) {
     } else {
         err.classList.add('hidden');
         let loginView = document.querySelector('#loginPopup');
-        loginView.classList.add('hidden');
+        loginView.hidden = true
         let attendanceView = document.querySelector('#attendancePopup');
-        attendanceView.classList.remove('hidden');
+        attendanceView.hidden = false
+        fetch('https://attn-server.herokuapp.com/users/protected').then(res => console.log(res))
     }
     // .then(res => console.log(res))
     // .then(res => {

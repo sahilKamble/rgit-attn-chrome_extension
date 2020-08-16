@@ -1,3 +1,56 @@
+var user
+document.addEventListener("DOMContentLoaded", ready);
+
+function ready() {
+    console.log('here')
+    fetch('https://attn-server.herokuapp.com/users/me')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        if(data.username) {
+            console.log('loggedin')
+            let loginView = document.querySelector('#loginPopup');
+            loginView.hidden = true;
+            let attendanceView = document.querySelector('#attendancePopup');
+            attendanceView.hidden = false;
+            var i = 2;
+            var subjects = data.subjects;
+            for (subject of subjects) {
+                var option = document.createElement("option");
+                option.classList.add("item")
+                option.setAttribute("value", "item-" + i++)
+                var node = document.createTextNode(subject.name);
+                option.appendChild(node);
+                var element = document.getElementById("subject");
+                element.appendChild(option);
+            }
+        }
+        else {
+            let loginView = document.querySelector('#loginPopup');
+            loginView.hidden = false;
+            let attendanceView = document.querySelector('#attendancePopup');
+            attendanceView.hidden = true; 
+        }
+
+        user = data;
+        return;
+    })
+    .catch(err => console.log(err));
+}
+
+// var logout = () => {
+//     fetch('https://attn-server.herokuapp.com/users/logout')
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log(data);
+//             let loginView = document.querySelector('#loginPopup');
+//             loginView.classList.hidden = true;
+//             let attendanceView = document.querySelector('#attendancePopup');
+//             attendanceView.classList.hidden = false;
+//             return;
+//     })
+// }
+
 function save(list) {
 
     var sub = document.querySelector('#subject')
@@ -101,32 +154,35 @@ function save(list) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        if (tabs[0].url.includes('meet.google.com') && tabs[0].url.includes('-')) {
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'getSubjects' }, response => {
-                console.log(response);
-                var subjects = response.subjects;
-                var i = 2;
-                for (subject of subjects) {
-                    var option = document.createElement("option");
-                    option.classList.add("item")
-                    option.setAttribute("value", "item-" + i++)
-                    var node = document.createTextNode(subject);
-                    option.appendChild(node);
-                    var element = document.getElementById("subject");
-                    element.appendChild(option);
-                }
-            });
-        }
-    });
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//         if (tabs[0].url.includes('meet.google.com') && tabs[0].url.includes('-')) {
+//             // chrome.tabs.sendMessage(tabs[0].id, { action: 'getSubjects' }, response => {
+//             //     console.log(response);
+//             //     var subjects = response.subjects;
+//             //     var i = 2;
+//             //     for (subject of subjects) {
+//             //         var option = document.createElement("option");
+//             //         option.classList.add("item")
+//             //         option.setAttribute("value", "item-" + i++)
+//             //         var node = document.createTextNode(subject);
+//             //         option.appendChild(node);
+//             //         var element = document.getElementById("subject");
+//             //         element.appendChild(option);
+//             //     }
+//             // });
+//             chrome.tabs.sendMessage(tabs[0].id, {action : 'getUser'}, response => {
+//                 console.log(response);
+//             })
+//         }
+//     });
+// });
 
 chrome.tabs.getSelected(null, tab => {
-    if (tab.url.includes('meet.google.com') && tab.url.includes('-')) {
-        // document.querySelector('#notOnMeet').classList.add('hidden');
-        // document.querySelector('#mainPopup').classList.remove('hidden');
-    }
+    // if (tab.url.includes('meet.google.com') && tab.url.includes('-')) {
+    //     document.querySelector('#notOnMeet').classList.add('hidden');
+    //     document.querySelector('#mainPopup').classList.remove('hidden');
+    // }
 });
 
 
@@ -146,5 +202,19 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
             console.log(response.list);
         });
+    });
+
+
+    document.querySelector('.logout').addEventListener('click', function () {
+        fetch('https://attn-server.herokuapp.com/users/logout')
+        .then(response => response.json())
+        .then(data => {
+            
+            let loginView = document.querySelector('#loginPopup');
+            loginView.hidden = false;
+            let attendanceView = document.querySelector('#attendancePopup');
+            attendanceView.hidden = true;
+            return;
+        })
     });
 });
