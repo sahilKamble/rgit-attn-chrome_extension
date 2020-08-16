@@ -4,38 +4,38 @@ document.addEventListener("DOMContentLoaded", ready);
 function ready() {
     console.log('here')
     fetch('https://attn-server.herokuapp.com/users/me')
-    .then(response => response.json())
-    .then(data => {
-        console.log(data)
-        if(data.username) {
-            console.log('loggedin')
-            let loginView = document.querySelector('#loginPopup');
-            loginView.hidden = true;
-            let attendanceView = document.querySelector('#attendancePopup');
-            attendanceView.hidden = false;
-            var i = 2;
-            var subjects = data.subjects;
-            for (subject of subjects) {
-                var option = document.createElement("option");
-                option.classList.add("item")
-                option.setAttribute("value", "item-" + i++)
-                var node = document.createTextNode(subject.name);
-                option.appendChild(node);
-                var element = document.getElementById("subject");
-                element.appendChild(option);
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            if (data.username) {
+                console.log('logged in')
+                let loginView = document.querySelector('#loginPopup');
+                loginView.hidden = true;
+                let attendanceView = document.querySelector('#attendancePopup');
+                attendanceView.hidden = false;
+                var i = 2;
+                var subjects = data.subjects;
+                for (subject of subjects) {
+                    var option = document.createElement("option");
+                    option.classList.add("item")
+                    option.setAttribute("value", "item-" + i++)
+                    var node = document.createTextNode(subject.name);
+                    option.appendChild(node);
+                    var element = document.getElementById("subject");
+                    element.appendChild(option);
+                }
             }
-        }
-        else {
-            let loginView = document.querySelector('#loginPopup');
-            loginView.hidden = false;
-            let attendanceView = document.querySelector('#attendancePopup');
-            attendanceView.hidden = true; 
-        }
+            else {
+                let loginView = document.querySelector('#loginPopup');
+                loginView.hidden = false;
+                let attendanceView = document.querySelector('#attendancePopup');
+                attendanceView.hidden = true;
+            }
 
-        user = data;
-        return;
-    })
-    .catch(err => console.log(err));
+            user = data;
+            return;
+        })
+        .catch(err => console.log(err));
 }
 
 // var logout = () => {
@@ -68,6 +68,7 @@ function save(list) {
     const url = "https://attn-server.herokuapp.com/";
     var url_subj = url + "subjects?name=" + subject;
     var attendance = [];                // stores array of json objects of student attendance
+    var absList = [];
     var present = 0;
 
     // request to https://attn-server.herokuapp.com/subjects to get info of list of students,teacher name,etc
@@ -88,6 +89,7 @@ function save(list) {
             request2.onload = () => {
 
                 if (request2.status === 200) {
+                    //get students list from db
                     var jsonObj2 = JSON.parse(request2.responseText);
                     jsonObj2 = jsonObj2.students;
 
@@ -98,6 +100,7 @@ function save(list) {
                     }
                     let fs = FuzzySet(dbStudents, false);
 
+                    //create new array of present people with name same as their same in db
                     for (student of attendees) {
                         dude = fs.get(student, null, 0, 5);
                         if (dude != null) {
@@ -108,32 +111,27 @@ function save(list) {
                     // logic to check attendance and append json object of students attendace to attendance list
                     for (student of jsonObj2) {
                         if (fuzzyAttendees.indexOf(student.name.toLowerCase()) >= 0) {
-                            let data = {
-                                "present": true,
-                                "student": student._id,
-                                "subject": subjectId
-                            }
-                            attendance.push(data);
                             present++;
                         } else {
-                            let data = {
-                                "present": false,
-                                "student": student._id,
-                                "subject": subjectId
-                            }
                             console.log(student.name);
-                            attendance.push(data);
+                            absList.push(student._id);
                         }
                     }
 
                     presentText = document.querySelector('.present');
                     presentText.innerText = present + ' Students are present.';
 
+                    attendance = {
+
+                        'absentStudents': absList,
+                        'subject': subjectId
+
+                    }
                     console.log(attendance);
 
                     // request to send attendance to https://attn-server.herokuapp.com/attn
                     var request3 = new XMLHttpRequest();
-                    request3.open("POST", "https://attn-server.herokuapp.com/attn", true);
+                    request3.open("POST", "https://attn-server.herokuapp.com/abs", true);
                     request3.setRequestHeader('Content-Type', 'application/json');
                     request3.send(JSON.stringify(attendance));
                     console.log('attendance sent')
@@ -207,14 +205,14 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 
     document.querySelector('.logout').addEventListener('click', function () {
         fetch('https://attn-server.herokuapp.com/users/logout')
-        .then(response => response.json())
-        .then(data => {
-            
-            let loginView = document.querySelector('#loginPopup');
-            loginView.hidden = false;
-            let attendanceView = document.querySelector('#attendancePopup');
-            attendanceView.hidden = true;
-            return;
-        })
+            .then(response => response.json())
+            .then(data => {
+
+                let loginView = document.querySelector('#loginPopup');
+                loginView.hidden = false;
+                let attendanceView = document.querySelector('#attendancePopup');
+                attendanceView.hidden = true;
+                return;
+            })
     });
 });
