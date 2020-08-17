@@ -2,15 +2,15 @@ var user;
 document.addEventListener("DOMContentLoaded", ready);
 
 function ready() {
-    console.log('here')
+    //console.log('here')
     fetch('https://attn-server.herokuapp.com/users/me')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            //console.log(data);
             let spinner = document.querySelector('.spinner');
             spinner.hidden = true;
             if (data.username) {
-                console.log('logged in')
+                //console.log('logged in')
                 let loginView = document.querySelector('#loginPopup');
                 loginView.hidden = true;
                 let attendanceView = document.querySelector('#attendancePopup');
@@ -102,7 +102,7 @@ function save(list) {
                         if (fuzzyAttendees.indexOf(student.name.toLowerCase()) >= 0) {
                             present++;
                         } else {
-                            console.log(student.name);
+                            //console.log(student.name);
                             absList.push(student._id);
                         }
                     }
@@ -122,14 +122,14 @@ function save(list) {
                         'subject': subjectId
 
                     };
-                    console.log(attendance);
+                    //console.log(attendance);
 
                     // request to send attendance to https://attn-server.herokuapp.com/attn
                     var request3 = new XMLHttpRequest();
                     request3.open("POST", "https://attn-server.herokuapp.com/abs", true);
                     request3.setRequestHeader('Content-Type', 'application/json');
                     request3.send(JSON.stringify(attendance));
-                    console.log('attendance sent');
+                    //console.log('attendance sent');
 
                     let saved = document.querySelector('.saved');
                     saved.hidden = false;
@@ -148,8 +148,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     //trigger Attendance reading code on click on button
     document.querySelector('.save-attendance').addEventListener('click', function () {
         let saveButton = document.querySelectorAll('button.btn-primary');
-        console.log('test');
-        console.log(saveButton);
+        //console.log('test');
+        //console.log(saveButton);
 
         for (button of saveButton) {
             button.hidden = true;
@@ -160,8 +160,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 
         chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
             if (response) {
-                console.log(response.list);
-                console.log('success');
+                //console.log(response.list);
+                //console.log('success');
                 save(response.list);
             }
         });
@@ -176,7 +176,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 
         chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
             if (response) {
-                console.log(response.list);
+                //console.log(response.list);
             }
             
             for (button of saveButton) {

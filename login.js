@@ -1,3 +1,54 @@
+function loginupdate() {
+    
+    fetch('https://attn-server.herokuapp.com/users/me')
+        .then(response => response.json())
+        .then(data => {
+            //console.log(data);
+            let spinner = document.querySelector('.spinner');
+            spinner.hidden = true;
+            if (data.username) {
+                // console.log('logged in')
+                let loginView = document.querySelector('#loginPopup');
+                loginView.hidden = true;
+                let attendanceView = document.querySelector('#attendancePopup');
+                attendanceView.hidden = false;
+                var e = document.querySelector("#subject");
+                //e.firstElementChild can be used. 
+                var child = e.lastElementChild;  
+                while (child) { 
+                    //console.log('here')
+                    e.removeChild(child); 
+                    child = e.lastElementChild;
+                } 
+                var i = 2;
+                var subjects = data.subjects;
+                for (subject of subjects) {
+                    //console.log('adding' + subject.name)
+                    var option = document.createElement("option");
+                    option.classList.add("item");
+                    option.setAttribute("value", "item-" + i++);
+                    var node = document.createTextNode(subject.name);
+                    option.appendChild(node);
+                    var element = document.getElementById("subject");
+                    element.appendChild(option);
+                }
+                //console.log('done adding')
+                //console.log(element.childNodes)
+            }
+            else {
+                let loginView = document.querySelector('#loginPopup');
+                loginView.hidden = false;
+                let attendanceView = document.querySelector('#attendancePopup');
+                attendanceView.hidden = true;
+            }
+
+            user = data;
+            return;
+        })
+        .catch(err => console.log(err));
+}
+
+
 document.querySelector('.login').addEventListener('keyup', () => {
     let form = document.querySelector('.login');
     let formdata = new FormData(form);
@@ -18,7 +69,7 @@ document.addEventListener('submit', async function (event) {
 
     event.preventDefault();
     let form = {};
-    console.log(event.target);
+    //console.log(event.target);
     let formData = new FormData(event.target);
     for (let key of formData.keys()) {
         form[key] = formData.get(key);
@@ -41,15 +92,16 @@ document.addEventListener('submit', async function (event) {
         body: JSON.stringify(data) // body data type must match "Content-Type" header
     })
     let resData = res;
-    console.log(resData.status);
+    //console.log(resData.status);
     if(resData.status != 200) {
         err.hidden = false;
     } else {
+        loginupdate()
         err.hidden =true;
         let loginView = document.querySelector('#loginPopup');
         loginView.hidden = true
         let attendanceView = document.querySelector('#attendancePopup');
         attendanceView.hidden = false
-        // fetch('https://attn-server.herokuapp.com/users/protected').then(res => console.log(res))
+        // fetch('https://attn-server.herokuapp.com/users/protected').then(res => //console.log(res))
     }
 });
