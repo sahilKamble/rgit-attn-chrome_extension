@@ -43,14 +43,14 @@ document.addEventListener('submit', async function (event) {
     let resData = res;
     console.log(resData.status);
     if(resData.status != 200) {
-        err.classList.remove('hidden');
+        err.hidden = false;
     } else {
-        err.classList.add('hidden');
+        err.hidden =true;
         let loginView = document.querySelector('#loginPopup');
         loginView.hidden = true
         let attendanceView = document.querySelector('#attendancePopup');
         attendanceView.hidden = false
-        fetch('https://attn-server.herokuapp.com/users/protected').then(res => console.log(res))
+        // fetch('https://attn-server.herokuapp.com/users/protected').then(res => console.log(res))
     }
     // .then(res => console.log(res))
     // .then(res => {

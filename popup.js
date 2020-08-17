@@ -137,11 +137,12 @@ function save(list) {
                     console.log('attendance sent')
 
                     saved = document.querySelector('.saved');
-                    saved.classList.remove('hidden');
+                    saved.hidden = false;
 
-                    saveButton = document.querySelector('.btn');
-                    saveButton.classList.add('hidden');
-
+                    saveButton = document.querySelectorAll('.btn');
+                    for(button of saveButton){
+                        saveButton.hidden = true;
+                    }
                 } else {
                     console.log('error ${request2.status} ${request2.statusText}')
                 }
@@ -182,7 +183,6 @@ chrome.tabs.getSelected(null, tab => {
     //     document.querySelector('#mainPopup').classList.remove('hidden');
     // }
 });
-
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     //trigger Attendance reading code on click on button
