@@ -56,8 +56,8 @@ function save(list) {
     var sub = document.querySelector('#subject')
     var subject = sub.options[sub.selectedIndex].text
 
-    var div = document.querySelector('#subject');
-    var division = div.options[div.selectedIndex].text
+    // var div = document.querySelector('#subject');
+    // var division = div.options[div.selectedIndex].text
 
     // var subject = "Theory of Computer Science";
     var attendees = list;
@@ -139,8 +139,8 @@ function save(list) {
                     saved = document.querySelector('.saved');
                     saved.hidden = false;
 
-                    saveButton = document.querySelectorAll('.btn');
-                    for(button of saveButton){
+                    saveButton = document.querySelectorAll('.btn-primary');
+                    for (button of saveButton) {
                         saveButton.hidden = true;
                     }
                 } else {
@@ -188,17 +188,25 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     //trigger Attendance reading code on click on button
     document.querySelector('.save-attendance').addEventListener('click', function () {
         let sub = document.querySelector('#subject');
-        if (sub.selectedIndex != 0) {
             chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
-                console.log(response.list);
-                save(response.list)
+                if (response) {
+                    console.log(response.list);
+                    saveButton = document.querySelectorAll('.btn-primary');
+                    console.log('test');
+                    for (button of saveButton) {
+                        saveButton.disabled = true;
+                    }
+                    console.log('success');
+                    save(response.list)
+                }
             });
-        }
     });
 
     document.querySelector('.populate').addEventListener('click', function () {
         chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
-            console.log(response.list);
+            if (response) {
+                console.log(response.list);
+            }
         });
     });
 
