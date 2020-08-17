@@ -1,4 +1,4 @@
-var user
+var user;
 document.addEventListener("DOMContentLoaded", ready);
 
 function ready() {
@@ -6,7 +6,9 @@ function ready() {
     fetch('https://attn-server.herokuapp.com/users/me')
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            console.log(data);
+            let spinner = document.querySelector('.spinner');
+            spinner.hidden = true;
             if (data.username) {
                 console.log('logged in')
                 let loginView = document.querySelector('#loginPopup');
@@ -17,8 +19,8 @@ function ready() {
                 var subjects = data.subjects;
                 for (subject of subjects) {
                     var option = document.createElement("option");
-                    option.classList.add("item")
-                    option.setAttribute("value", "item-" + i++)
+                    option.classList.add("item");
+                    option.setAttribute("value", "item-" + i++);
                     var node = document.createTextNode(subject.name);
                     option.appendChild(node);
                     var element = document.getElementById("subject");
@@ -38,23 +40,10 @@ function ready() {
         .catch(err => console.log(err));
 }
 
-// var logout = () => {
-//     fetch('https://attn-server.herokuapp.com/users/logout')
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log(data);
-//             let loginView = document.querySelector('#loginPopup');
-//             loginView.classList.hidden = true;
-//             let attendanceView = document.querySelector('#attendancePopup');
-//             attendanceView.classList.hidden = false;
-//             return;
-//     })
-// }
-
 function save(list) {
 
-    var sub = document.querySelector('#subject')
-    var subject = sub.options[sub.selectedIndex].text
+    var sub = document.querySelector('#subject');
+    var subject = sub.options[sub.selectedIndex].text;
 
     // var div = document.querySelector('#subject');
     // var division = div.options[div.selectedIndex].text
@@ -118,15 +107,21 @@ function save(list) {
                         }
                     }
 
-                    presentText = document.querySelector('.present');
+                    let spinner = document.querySelector('.spinner-attn');
+                    spinner.hidden = true;
+
+                    let presentText = document.querySelector('.present');
                     presentText.innerText = present + ' Students are present.';
+
+                    let afterSave = document.querySelector('.after-save');
+                    afterSave.hidden = false;
 
                     attendance = {
 
                         'absentStudents': absList,
                         'subject': subjectId
 
-                    }
+                    };
                     console.log(attendance);
 
                     // request to send attendance to https://attn-server.herokuapp.com/attn
@@ -134,82 +129,61 @@ function save(list) {
                     request3.open("POST", "https://attn-server.herokuapp.com/abs", true);
                     request3.setRequestHeader('Content-Type', 'application/json');
                     request3.send(JSON.stringify(attendance));
-                    console.log('attendance sent')
+                    console.log('attendance sent');
 
-                    saved = document.querySelector('.saved');
+                    let saved = document.querySelector('.saved');
                     saved.hidden = false;
 
-                    saveButton = document.querySelectorAll('.btn-primary');
-                    for (button of saveButton) {
-                        saveButton.hidden = true;
-                    }
                 } else {
-                    console.log('error ${request2.status} ${request2.statusText}')
+                    console.log('error ${request2.status} ${request2.statusText}');
                 }
             }
         } else {
-            console.log('error ${request1.status} ${request1.statusText}')
+            console.log('error ${request1.status} ${request1.statusText}');
         }
     }
 }
 
-// document.addEventListener("DOMContentLoaded", () => {
-//     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//         if (tabs[0].url.includes('meet.google.com') && tabs[0].url.includes('-')) {
-//             // chrome.tabs.sendMessage(tabs[0].id, { action: 'getSubjects' }, response => {
-//             //     console.log(response);
-//             //     var subjects = response.subjects;
-//             //     var i = 2;
-//             //     for (subject of subjects) {
-//             //         var option = document.createElement("option");
-//             //         option.classList.add("item")
-//             //         option.setAttribute("value", "item-" + i++)
-//             //         var node = document.createTextNode(subject);
-//             //         option.appendChild(node);
-//             //         var element = document.getElementById("subject");
-//             //         element.appendChild(option);
-//             //     }
-//             // });
-//             chrome.tabs.sendMessage(tabs[0].id, {action : 'getUser'}, response => {
-//                 console.log(response);
-//             })
-//         }
-//     });
-// });
-
-chrome.tabs.getSelected(null, tab => {
-    // if (tab.url.includes('meet.google.com') && tab.url.includes('-')) {
-    //     document.querySelector('#notOnMeet').classList.add('hidden');
-    //     document.querySelector('#mainPopup').classList.remove('hidden');
-    // }
-});
-
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     //trigger Attendance reading code on click on button
     document.querySelector('.save-attendance').addEventListener('click', function () {
-        let sub = document.querySelector('#subject');
-            chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
-                if (response) {
-                    console.log(response.list);
-                    saveButton = document.querySelectorAll('.btn-primary');
-                    console.log('test');
-                    for (button of saveButton) {
-                        saveButton.disabled = true;
-                    }
-                    console.log('success');
-                    save(response.list)
-                }
-            });
-    });
+        let saveButton = document.querySelectorAll('button.btn-primary');
+        console.log('test');
+        console.log(saveButton);
 
-    document.querySelector('.populate').addEventListener('click', function () {
+        for (button of saveButton) {
+            button.hidden = true;
+        }
+
+        let spinner = document.querySelector('.spinner-attn');
+        spinner.hidden = false;
+
         chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
             if (response) {
                 console.log(response.list);
+                console.log('success');
+                save(response.list);
             }
         });
     });
 
+    document.querySelector('.populate').addEventListener('click', function () {
+        let saveButton = document.querySelectorAll('button.btn-primary');
+
+        for (button of saveButton) {
+            button.disabled = true;
+        }
+
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'getAttendance' }, response => {
+            if (response) {
+                console.log(response.list);
+            }
+            
+            for (button of saveButton) {
+                button.disabled = false;
+            }
+        });
+    });
 
     document.querySelector('.logout').addEventListener('click', function () {
         fetch('https://attn-server.herokuapp.com/users/logout')

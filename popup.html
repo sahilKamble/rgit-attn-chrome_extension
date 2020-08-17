@@ -2,14 +2,20 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
-    
+
+    <div class="spinner">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
     <div id="loginPopup" hidden>
         <h2 class="login-header my-5">Login</h2>
         <form class="login">
@@ -29,12 +35,9 @@
             </div>
         </form>
     </div>
-    
+
     <div id="attendancePopup" hidden>
-        <div class="d-flex justify-content-end">
-        </div>
         <h2 class="login-header mb-5 mt-3">Attendance</h2>
-        
         <div class="dropdown mb-5">
             <div class="form-group">
                 <label for="subject" class="select-label form-label">Subject</label>
@@ -43,28 +46,39 @@
                 </select>
             </div>
         </div>
-        
+
         <button type="button" class="populate btn btn-primary btn-block">Populate List</button>
         <button type="button" class="save-attendance btn btn-primary btn-block">Save Attendance</button>
-        
-        <h4 class="saved mt-3" hidden>Attendance Saved!</h4>
-        <p class="present"></p>
-        
-        <div class="d-flex justify-content-between mt-5">
-            <a class="attn-link btn" href="https://attn-server.herokuapp.com/"
-            target="_blank">Check Attendance</a>
-            <a href="#" class="logout btn">Logout</a>
+
+        <div class="spinner-attn" hidden>
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <div class="after-save" hidden>
+            <h4 class="saved mt-3" hidden>Attendance Saved!</h4>
+            <p class="present"></p>
+        </div>
+
+        <div class="bottom-elem">
+            <div class="d-flex justify-content-between align-items-end mt-5">
+                <a class="attn-link btn" href="https://attn-server.herokuapp.com/" target="_blank">Check Attendance</a>
+                <a href="#" class="logout btn">Logout</a>
+            </div>
         </div>
     </div>
+
     <div id="notOnMeet" hidden>
         <h4>This Extension only works in Google Meets</h4>
     </div>
+
     <script src="popup.js"></script>
     <script src="login.js"></script>
     <script type="text/javascript" src="fuzzyset.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+    <!-- <script src="bootstrap.min.js"></script>
+    <script src="jquery-3.2.1.slim.min.js"></script>
+    <script src="popper.min.js"></script> -->
 </body>
 
 </html>

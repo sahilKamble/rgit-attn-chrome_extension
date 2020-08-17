@@ -11,11 +11,16 @@
 } */
 
 body {
-  min-height: 28rem;
+  position: relative;
+  height: 28rem;
   width: 20rem;
-  /* border: 1px solid black; */
+  border: 1px solid black;
   text-align: center;
   padding: 2rem;
+}
+
+.attendancePopup {
+  height: 100%;
 }
 
 .login,
@@ -27,6 +32,10 @@ body {
   border-radius: 2rem;
 }
 
+a.btn {
+  color: #0056b3;
+}
+
 .error-para {
   position: absolute;
   top: 2rem;
@@ -34,3 +43,24 @@ body {
   white-space: normal;
 }
 
+.spinner {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  translate: (-40%, -40%);
+}
+
+.spinner-border {
+  width: 4rem;
+  height: 4rem;
+  border: 1rem solid currentColor;
+  border-right-color: transparent;
+}
+
+.spinner-attn {
+  margin: 3.57rem 0;
+}
+
+.present {
+  margin-bottom: 4.46rem;
+}

@@ -52,11 +52,4 @@ document.addEventListener('submit', async function (event) {
         attendanceView.hidden = false
         // fetch('https://attn-server.herokuapp.com/users/protected').then(res => console.log(res))
     }
-    // .then(res => console.log(res))
-    // .then(res => {
-    //     if (res.status != 200) {
-    //         err.classList.remove('hidden');
-    //     }
-    //     //     fetch('http://localhost:3000/users/protected').then(res => console.log(res))
-    // })
 });
