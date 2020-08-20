@@ -8,18 +8,20 @@ function loginupdate() {
             spinner.hidden = true;
             if (data.username) {
                 // console.log('logged in')
+                var e = document.querySelector("#subject");
+                e.innerHTML = "";
                 let loginView = document.querySelector('#loginPopup');
                 loginView.hidden = true;
                 let attendanceView = document.querySelector('#attendancePopup');
                 attendanceView.hidden = false;
-                var e = document.querySelector("#subject");
-                //e.firstElementChild can be used. 
-                var child = e.lastElementChild;  
-                while (child) { 
-                    //console.log('here')
-                    e.removeChild(child); 
-                    child = e.lastElementChild;
-                } 
+                
+                // //e.firstElementChild can be used. 
+                // var child = e.lastElementChild;  
+                // while (child) { 
+                //     //console.log('here')
+                //     e.removeChild(child); 
+                //     child = e.lastElementChild;
+                // } 
                 var i = 2;
                 var subjects = data.subjects;
                 for (subject of subjects) {
@@ -32,6 +34,7 @@ function loginupdate() {
                     var element = document.getElementById("subject");
                     element.appendChild(option);
                 }
+                
                 //console.log('done adding')
                 //console.log(element.childNodes)
             }

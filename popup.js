@@ -189,7 +189,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         fetch('https://attn-server.herokuapp.com/users/logout')
             .then(response => response.json())
             .then(data => {
-
+                var e = document.querySelector("#subject");
+                e.innerHTML = "";
                 let loginView = document.querySelector('#loginPopup');
                 loginView.hidden = false;
                 let attendanceView = document.querySelector('#attendancePopup');
