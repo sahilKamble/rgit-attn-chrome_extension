@@ -34,6 +34,12 @@ function scrollList(element) {
 		}, 200);
 	} else {
 		getPeople();
+	}
+
+	if(list.length == 0) {
+		setTimeout(function () {
+			scrollList(element);
+		}, 200);
 		done = true;
 	}
 }
@@ -55,10 +61,11 @@ function collectinfo(callback) {
 		if (!isHidden(document.querySelector('[role="tabpanel"]'))) {
 			console.log('Visible!');
 			clearInterval(checkExist);
-			new Promise((r) => setTimeout(r, 1000))
-				.then(() => {
-					callback();
-				});
+			callback();
+			// new Promise((r) => setTimeout(r, 1000))
+			// 	.then(() => {
+			// 		callback();
+			// 	});
 		}
 	}, 100);
 }
