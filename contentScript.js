@@ -18,7 +18,7 @@ function scrollList(element) {
 	element.scrollTop = 0;
 
 	function scroll() {
-		element.scrollTop += 400;
+		element.scrollTop += 200;
 		if (Math.ceil(element.scrollTop) < (element.scrollHeight - element.clientHeight)) {
 			setTimeout(function () {
 				getPeople();
