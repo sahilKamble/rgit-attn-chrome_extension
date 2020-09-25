@@ -4,12 +4,15 @@ var done = false;
 var subOver = false;
 var userOver = false;
 var user;
+var scrollTimeout;
+var scrollStart;
 
 function getPeople() {
-	for (let name of document.querySelectorAll('[data-sort-key]')) {
+	let names = document.querySelectorAll('[data-sort-key]');
+	for (let name of names) {
 		if (!list.includes(name.getAttribute('data-sort-key').split(' spaces/')[0])) {
 			list.push(name.getAttribute('data-sort-key').split(' spaces/')[0]);
-		}
+		} 
 	}
 	console.log(list);
 }
@@ -20,28 +23,24 @@ function scrollList(element) {
 	function scroll() {
 		element.scrollTop += 200;
 		if (Math.ceil(element.scrollTop) < (element.scrollHeight - element.clientHeight)) {
-			setTimeout(function () {
+			scrollTimeout = setTimeout(function () {
 				getPeople();
 				scroll();
 			}, 200);
+		} else {
+			done = true;
 		}
-		else done = true;
 	}
 
 	if (element.scrollHeight > element.clientHeight) {
-		setTimeout(function () {
+		scrollStart = setTimeout(function () {
 			scroll();
 		}, 200);
 	} else {
 		getPeople();
-	}
-
-	if(list.length == 0) {
-		setTimeout(function () {
-			scrollList(element);
-		}, 200);
 		done = true;
 	}
+
 }
 
 function collectinfo(callback) {
@@ -56,6 +55,7 @@ function collectinfo(callback) {
 		// open list if its not open.
 		plist.click();
 	}
+
 	// keep checking if the list is visible yet(i dont think this works)
 	const checkExist = setInterval(function () {
 		if (!isHidden(document.querySelector('[role="tabpanel"]'))) {
@@ -76,14 +76,21 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		done = false;
 		collectinfo(function () {
 			// get the element to perform autoscroll in
-			var list = document.querySelector('[role="tabpanel"]');
+			let panel = document.querySelector('[role="tabpanel"]');
 			//scroll list of people
-			scrollList(list);
+			scrollList(panel);
 		});
-		var Id = setInterval(() => {
-			if (done) {
+		let Id = setInterval(() => {
+			if (done && list.length != 0) {
 				clearInterval(Id);
 				sendResponse({ list });
+			} else if (done && list.length == 0) {
+				done = false;
+				console.log('lmao F');
+				let panel = document.querySelector('[role="tabpanel"]');
+				clearTimeout(scrollStart);
+				clearTimeout(scrollTimeout);
+				scrollList(panel);
 			}
 		}, 1000);
 		return true;

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				for (let subject of subjects) {
 					const option = document.createElement('option');
 					option.classList.add('item');
-					option.setAttribute('value', 'item-' + i++);
+					option.setAttribute('value', `item-${i++}`);
 					const node = document.createTextNode(subject.name);
 					option.appendChild(node);
 					const element = document.getElementById('subject');
@@ -101,15 +101,13 @@ function save(list) {
 					const spinner = document.querySelector('.spinner-attn');
 					spinner.hidden = true;
 					const presentText = document.querySelector('.present');
-					presentText.innerText = present + ' Students are present.';
+					presentText.innerText = `${present} Students are present.`;
 					const afterSave = document.querySelector('.after-save');
 					afterSave.hidden = false;
 
 					const attendance = {
-
 						'absentStudents': absList,
 						'subject': subjectId
-
 					};
 					//console.log(attendance);
 
@@ -175,7 +173,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 	document.querySelector('.logout').addEventListener('click', function () {
 		fetch('https://attn-server.herokuapp.com/users/logout')
 			.then(response => response.json())
-			.then(data => {
+			.then(() => {
 				const e = document.querySelector('#subject');
 				e.innerHTML = '';
 				const loginView = document.querySelector('#loginPopup');
