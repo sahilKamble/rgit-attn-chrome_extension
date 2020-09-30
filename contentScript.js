@@ -1,11 +1,13 @@
 var list = [];
 var subjects = [];
 var done = false;
-var subOver = false;
-var userOver = false;
+// var auto = false;
+// var subOver = false;
+// var userOver = false;
 var user;
 var scrollTimeout;
 var scrollStart;
+var autoInterval;
 
 function getPeople() {
 	let names = document.querySelectorAll('[data-sort-key]');
@@ -17,7 +19,28 @@ function getPeople() {
 	console.log(list);
 }
 
+function autoPopulate () {
+	if (!autoInterval){
+		autoInterval =  setInterval(() => {
+			chrome.storage.local.get(['auto'], function(result) {
+				console.log('Value is currently ' + result.auto);
+				if (result.auto) {
+					collectinfo(function () {
+					// get the element to perform autoscroll in
+						let panel = document.querySelector('[role="tabpanel"]');
+						//scroll list of people
+						scrollList(panel);
+					});
+				}
+			});
+		}, 10000);
+	}
+}
+autoPopulate();
+	
 function scrollList(element) {
+	clearTimeout(scrollStart);
+	clearTimeout(scrollTimeout);
 	element.scrollTop = 0;
 
 	function scroll() {
@@ -46,15 +69,16 @@ function scrollList(element) {
 function collectinfo(callback) {
 	// idk found this on stack overflow, checks if an element is visible on the screen
 	function isHidden(el) {
-		return el.offsetParent === null;
+		if(el) {
+			return el.offsetParent === null;
+		} else {
+			return true;
+		}
 	}
 
-	// check if people's list is already open
-	if (document.querySelector('[aria-label*="participants."]') == null) {
-		let plist = document.querySelector('[data-tooltip="Show everyone"]');
-		// open list if its not open.
-		plist.click();
-	}
+	let panel = document.querySelector('[data-tooltip="Show everyone"]');
+	// open list if its not open.
+	panel.click();
 
 	// keep checking if the list is visible yet(i dont think this works)
 	const checkExist = setInterval(function () {
@@ -71,6 +95,7 @@ function collectinfo(callback) {
 }
 
 //add a listener to start attendance reading code when we get a message
+// eslint-disable-next-line no-undef
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	if (request.action === 'getAttendance') {
 		done = false;
@@ -103,4 +128,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		sendResponse(user);
 		return true;
 	}
+	if (request.action === 'autoEnable') {
+		if (!autoInterval) {
+			autoPopulate();
+		}
+		sendResponse(true);
+		return true;
+	}
+	if (request.action === 'autoDisable') {
+		autoInterval = clearInterval(autoInterval);
+		sendResponse(false);
+		return true;
+	}
+
 });

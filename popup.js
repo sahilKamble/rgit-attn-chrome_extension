@@ -21,6 +21,15 @@ document.addEventListener('DOMContentLoaded', function () {
 					const element = document.getElementById('subject');
 					element.appendChild(option);
 				}
+				chrome.storage.local.get(['auto'], function(result) {
+					// console.log('Value currently is ' + result.auto);
+					let	autoCheckbox = document.querySelector('#auto');
+					if (result.auto) {
+						autoCheckbox.checked = true;
+					} else {
+						autoCheckbox.checked = false;
+					}
+				});
 			}
 			else {
 				const loginView = document.querySelector('#loginPopup');
@@ -132,6 +141,19 @@ function save(list) {
 }
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+	//auto populate
+	document.querySelector('#auto').addEventListener('change', function () {
+		if (this.checked) {
+			chrome.storage.local.set({auto: true}, function() {
+				console.log('Value is set to ' + true);
+			});
+		} else {
+			chrome.storage.local.set({auto: false}, function() {
+				console.log('Value is set to ' + false);
+			});
+		}
+	});
+
 	//trigger Attendance reading code on click on button
 	document.querySelector('.save-attendance').addEventListener('click', function () {
 		const saveButton = document.querySelectorAll('button.btn-primary');

@@ -12,9 +12,9 @@
 
 body {
   position: relative;
-  height: 28rem;
-  width: 20rem;
-  border: 1px solid black;
+  min-height: 28rem;
+  min-width: 20rem;
+  /* border: 1px solid black; */
   text-align: center;
   padding: 2rem;
 }
